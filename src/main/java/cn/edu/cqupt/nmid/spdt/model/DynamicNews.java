@@ -37,11 +37,6 @@ public class DynamicNews {
         this.dynamicPic = dynamicPic;
     }
 
-    @Override
-    public String toString() {
-        return "["+getUserId()+","+getInitTime()+","+getContent()+","+getDynamicPic()+"]";
-    }
-
     public int getDynamicId() {
         return dynamicId;
     }
@@ -57,4 +52,10 @@ public class DynamicNews {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "["+getUserId()+","+getInitTime()+","+getContent()+","+getDynamicPic()+"]";
+    }
+
 }

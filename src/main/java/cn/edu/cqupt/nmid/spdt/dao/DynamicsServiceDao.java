@@ -3,12 +3,14 @@ package cn.edu.cqupt.nmid.spdt.dao;
 import cn.edu.cqupt.nmid.spdt.constant.DaoConstant;
 import cn.edu.cqupt.nmid.spdt.model.DynamicNews;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -21,10 +23,21 @@ public class DynamicsServiceDao implements DaoConstant {
     private JdbcTemplate jdbcTemplate;
 
     public DynamicNews estabDynamicNews(DynamicNews dynamicNews) {
-        System.out.println(dynamicNews);
-        String url = "INSERT INTO dynamics (user_id,init_time,words) VALUES (?,?,?)";
-        int results = jdbcTemplate.update(url,dynamicNews.getUserId(),dynamicNews.getInitTime(),dynamicNews.getContent());
+        String sql = "INSERT INTO dynamics (user_id,init_time,words) VALUES (?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int results = jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement pS = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                pS.setString(1,dynamicNews.getUserId());
+                pS.setLong(2,dynamicNews.getInitTime());
+                pS.setString(3,dynamicNews.getContent());
+                return pS;
+
+            }
+        },keyHolder);
         if (1 == results) {
+            dynamicNews.setDynamicId(keyHolder.getKey().intValue());
             return dynamicNews;
         }
         return null;

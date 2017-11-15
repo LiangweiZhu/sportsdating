@@ -37,7 +37,7 @@ public class FileServiceImpl implements FileService {
      * @throws IOException
      */
     @Override
-    public ResponseJson upLoadPic(HttpServletRequest request,String property,int id) throws IOException {
+    public String upLoadPic(HttpServletRequest request,String property,int id) throws IOException {
         //将当前上下文初始化给CommonsMultipartResolver（多部分解析器）
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         //判断request是否有文件上传
@@ -47,10 +47,8 @@ public class FileServiceImpl implements FileService {
             //获取multipartRequest中所有文件名
             Iterator iter = multipartHttpServletRequest.getFileNames();
             java.lang.String newFilePath="";
-            System.out.println("one::"+iter.hasNext());
             while(iter.hasNext()){
                 MultipartFile file = multipartHttpServletRequest.getFile(iter.next().toString());
-                System.out.println("one::"+file.isEmpty());
                 if (!file.isEmpty()){
                     //判断文件夹是否存在，不存在则创建
                     String basePath = request.getSession().getServletContext().getRealPath("/")+"WEB-INF"+
@@ -65,17 +63,15 @@ public class FileServiceImpl implements FileService {
                     java.io.File file1 = new java.io.File(path);
                     file.transferTo(file1);
                     if (!"success".equals(toSavePic(property,id,newFilePath))){
-                        return new ResponseJson(StatusCodeConstant.INTERNAL_SERVER_ERROR);
+                        return "";
                     }
                 }else {
-                    return new ResponseJson(StatusCodeConstant.INTERNAL_SERVER_ERROR);
+                    return "";
                 }
             }
-            ResponseJson response = new ResponseJson(StatusCodeConstant.OK);
-            response.setBody(newFilePath);
-            return response;
+            return newFilePath;
         } else {
-            return new ResponseJson(StatusCodeConstant.INTERNAL_SERVER_ERROR);
+            return "";
         }
     }
 

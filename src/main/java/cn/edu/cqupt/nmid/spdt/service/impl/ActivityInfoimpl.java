@@ -5,12 +5,14 @@ import cn.edu.cqupt.nmid.spdt.dao.ActivityInfoDao;
 import cn.edu.cqupt.nmid.spdt.model.Activity;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
 import cn.edu.cqupt.nmid.spdt.service.ActivityService;
+import cn.edu.cqupt.nmid.spdt.service.FileService;
 import cn.edu.cqupt.nmid.spdt.util.DaoResponseUtil;
 import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -23,6 +25,8 @@ public class ActivityInfoimpl implements ActivityService {
     @Resource
     private ActivityInfoDao activityInfoDao;
 
+    @Resource
+    private FileService fileService;
     /**
      * 根据活动ID返回活动信息
      * @param activityId
@@ -50,9 +54,9 @@ public class ActivityInfoimpl implements ActivityService {
      * @return
      */
     @Override
-    public ResponseJson estabActivity(HttpServletRequest request, Activity activity) {
+    public ResponseJson estabActivity(HttpServletRequest request, Activity activity) throws IOException {
         Activity newActivity = activityInfoDao.saveActivity(activity);
-        //需要修改
+        newActivity.setActivityPic(fileService.upLoadPic(request,"activities",activity.getActivityId()));
         return DaoResponseUtil.isNull(newActivity);
     }
 

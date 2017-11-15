@@ -3,12 +3,15 @@ package cn.edu.cqupt.nmid.spdt.service;
 import cn.edu.cqupt.nmid.spdt.model.DynamicNews;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
 /**
  * Created by Lawrence on 2017/11/11.
  */
 public interface DynamicsService {
 
-    public ResponseJson estabDynamic(DynamicNews dynamicNews);
+    public ResponseJson estabDynamic(HttpServletRequest request, DynamicNews dynamicNews) throws IOException;
 
     public ResponseJson getAllDynamicNews();
 

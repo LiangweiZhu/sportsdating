@@ -34,7 +34,7 @@ public class FileController {
      * @return
      * @throws IOException
      */
-    @ResponseBody
+/*    @ResponseBody
     @RequestMapping(value = "/uploadActivityPic",method = RequestMethod.POST)
     public ResponseJson doUpload(HttpServletRequest request,@RequestParam("activityId") int activityId) throws IOException {
         return fileService.upLoadPic(request,"activities",activityId);
@@ -44,6 +44,6 @@ public class FileController {
     @RequestMapping(value = "/uploadDynamicsPic",method = RequestMethod.POST)
     public ResponseJson uploadDynamicsPic(HttpServletRequest request, int dynamicId) throws IOException {
         return fileService.upLoadPic(request,"DynamicNews",dynamicId);
-    }
+    }*/
 
 }

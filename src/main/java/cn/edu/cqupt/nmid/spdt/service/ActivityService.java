@@ -4,6 +4,7 @@ import cn.edu.cqupt.nmid.spdt.model.Activity;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * Created by Lawrence on 2017/11/5.
@@ -13,7 +14,7 @@ public interface ActivityService {
 
     public ResponseJson getActivities();
 
-    public ResponseJson estabActivity(HttpServletRequest request, Activity activity);
+    public ResponseJson estabActivity(HttpServletRequest request, Activity activity) throws IOException;
 
     public ResponseJson joinActivity(String userId,int activeId);
 }

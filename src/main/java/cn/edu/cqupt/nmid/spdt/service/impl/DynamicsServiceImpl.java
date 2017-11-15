@@ -5,9 +5,13 @@ import cn.edu.cqupt.nmid.spdt.dao.DynamicsServiceDao;
 import cn.edu.cqupt.nmid.spdt.model.DynamicNews;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
 import cn.edu.cqupt.nmid.spdt.service.DynamicsService;
+import cn.edu.cqupt.nmid.spdt.service.FileService;
+import cn.edu.cqupt.nmid.spdt.util.DaoResponseUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,24 +23,19 @@ public class DynamicsServiceImpl implements DynamicsService {
     @Resource
     private DynamicsServiceDao dynamicsDao;
 
+    @Resource
+    private FileService fileService;
+
     @Override
-    public ResponseJson estabDynamic(DynamicNews dynamicNews) {
+    public ResponseJson estabDynamic(HttpServletRequest request, DynamicNews dynamicNews) throws IOException {
         DynamicNews results = dynamicsDao.estabDynamicNews(dynamicNews);
-        if (results != null) {
-            ResponseJson responseJson = new ResponseJson(StatusCodeConstant.OK);
-            responseJson.setBody(results);
-        }
-        return new ResponseJson(StatusCodeConstant.INTERNAL_SERVER_ERROR);
+        results.setDynamicPic(fileService.upLoadPic(request,"DynamicNews",results.getDynamicId()));;
+        return DaoResponseUtil.isNull(results);
     }
 
     @Override
     public ResponseJson getAllDynamicNews() {
         List<DynamicNews> dynamicNewsList = dynamicsDao.getAllDynamicNews();
-        if (dynamicNewsList!=null) {
-            ResponseJson responseJson = new ResponseJson(StatusCodeConstant.OK);
-            responseJson.setBody(dynamicNewsList);
-            return responseJson;
-        }
-        return new ResponseJson(StatusCodeConstant.INTERNAL_SERVER_ERROR);
+        return DaoResponseUtil.isNull(dynamicNewsList);
     }
 }

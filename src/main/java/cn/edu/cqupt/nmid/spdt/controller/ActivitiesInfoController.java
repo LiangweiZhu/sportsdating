@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * Created by Lawrence on 2017/11/4.
@@ -22,9 +23,6 @@ public class ActivitiesInfoController {
 
     @Resource
     private ActivityInfoimpl activityInfoimpl;
-
-    @Resource
-    private FileService fileService;
 
     @ResponseBody
     @RequestMapping(value = "/getActivities",method = RequestMethod.GET)
@@ -49,7 +47,7 @@ public class ActivitiesInfoController {
     @ResponseBody
     @RequestMapping(value = "/estabActivity",method = RequestMethod.POST)
     public ResponseJson estabActivity(HttpServletRequest request,
-                                      Activity activity) {
+                                      Activity activity) throws IOException {
         return activityInfoimpl.estabActivity(request,activity);
     }
 }
