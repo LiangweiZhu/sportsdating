@@ -3,6 +3,8 @@ package cn.edu.cqupt.nmid.spdt.service;
 import cn.edu.cqupt.nmid.spdt.model.Activity;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by Lawrence on 2017/11/5.
  */
@@ -11,5 +13,7 @@ public interface ActivityService {
 
     public ResponseJson getActivities();
 
-    public ResponseJson estabActivity(Activity activity);
+    public ResponseJson estabActivity(HttpServletRequest request, Activity activity);
+
+    public ResponseJson joinActivity(String userId,int activeId);
 }

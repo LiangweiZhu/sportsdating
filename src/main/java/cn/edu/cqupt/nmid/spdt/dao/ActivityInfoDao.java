@@ -4,12 +4,14 @@ import cn.edu.cqupt.nmid.spdt.constant.DaoConstant;
 import cn.edu.cqupt.nmid.spdt.model.Activity;
 import com.sdicons.json.validator.impl.predicates.Str;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -21,14 +23,9 @@ public class ActivityInfoDao implements DaoConstant{
     @Resource
     private JdbcTemplate jdbcTemplate;
 
-    public Activity getActivityByinitTime(Long initTime) {
-        String sql = "SELECT * FROM activities WHERE init_Time=?";
-        return jdbcTemplate.queryForObject(sql,new ActivityRowMapper(),initTime);
-    }
-
-    public Activity getActivityById(int activeId) {
-        String sql="SELECT * FROM activities WHERE active_id=?";
-        return jdbcTemplate.queryForObject(sql,new ActivityRowMapper(),activeId);
+    public Activity getActivityById(int activityId) {
+        String sql="SELECT * FROM activities WHERE activity_id=?";
+        return jdbcTemplate.queryForObject(sql,new ActivityRowMapper(),activityId);
     }
 
     /**
@@ -36,8 +33,15 @@ public class ActivityInfoDao implements DaoConstant{
      * @return
      */
     public List<Activity> getActivities() {
-        String sql = "SELECT * FROM activities ORDER BY start_time DESC";
-        return jdbcTemplate.query(sql,new ActivityRowMapper());
+        String sql = "SELECT * FROM activities WHERE end_time > ? ORDER BY start_time DESC";
+        return jdbcTemplate.query(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement pS = connection.prepareStatement(sql);
+                pS.setLong(1,System.currentTimeMillis());
+                return pS;
+            }
+        },new ActivityRowMapper());
     }
 
     /**
@@ -45,19 +49,36 @@ public class ActivityInfoDao implements DaoConstant{
      * @param activity
      * @return
      */
-    public String saveActivity(Activity activity) {
-        String sql="INSERT INTO activities (active_name,initiator,content,remarks,init_time,start_time,end_time," +
+    public Activity saveActivity(Activity activity) {
+        String sql="INSERT INTO activities (activity_name,initiator,content,remarks,init_time,start_time,end_time," +
                 "location,people_needs,ac_ra) VALUES (?,?,?,?,?,?,?,?,?,?)";
-        int resluts = jdbcTemplate.update(sql,activity.getActiveName(),activity.getInitiator(),
-                activity.getActiveIntroduction(),activity.getRemarks(),activity.getInitTime(),activity.getStartTime()
-                ,activity.getEndTime(),activity.getLocation(),activity.getPeopleNeeds(),activity.getActiveOrRace());
-        if (1 == resluts) {return DaoConstant.SUCCESS;}
-        else {return DaoConstant.FAIL;}
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int results = jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement pS = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                pS.setString(1,activity.getActivityName());
+                pS.setString(2,activity.getInitiator());
+                pS.setString(3,activity.getContent());
+                pS.setString(4,activity.getRemarks());
+                pS.setLong(5,activity.getInitTime());
+                pS.setLong(6,activity.getStartTime());
+                pS.setLong(7,activity.getEndTime());
+                pS.setString(8,activity.getLocation());
+                pS.setInt(9,activity.getPeopleNeeds());
+                pS.setString(10,activity.getActivityOrRace());
+                return pS;
+            }
+        },keyHolder);
+        if (1 == results) {
+            activity.setActivityId(keyHolder.getKey().intValue());
+            return activity;
+        } return null;
     }
 
-    public String savePicture(String activePic,int activeId) {
-        String sql="UPDATE activities SET active_pic=? WHERE active_id=?";
-        int num = jdbcTemplate.update(sql,activePic,activeId);
+    public String savePicture(String activityPic,int activityId) {
+        String sql="UPDATE activities SET activity_pic=? WHERE activity_id=?";
+        int num = jdbcTemplate.update(sql,activityPic,activityId);
         if (1==num) {
             return DaoConstant.SUCCESS;
         } else {
@@ -68,26 +89,29 @@ public class ActivityInfoDao implements DaoConstant{
     /**
      * 更新参加活动的运动人数
      * @param number
-     * @param activeId
+     * @param activityId
      * @return
      */
-    public String updateActivityPeople(int number,String activeId) {
-        String sql = "UPDATE activities SET people_have=? WHERE active_id=?";
-        if (1==jdbcTemplate.update(sql,number,activeId)) {
+    public String updateActivityPeople(int number,int activityId) {
+        String sql = "UPDATE activities SET people_have=? WHERE activity_id=?";
+        if (1==jdbcTemplate.update(sql,number,activityId)) {
             return SUCCESS;
         } else {return FAIL;}
     }
 
+ /*   public String joinActivity(String userId,int activityId) {
+
+    }*/
 
     private class ActivityRowMapper implements RowMapper<Activity> {
 
         @Override
         public Activity mapRow(ResultSet resultSet, int i) throws SQLException {
             Activity activity = new Activity();
-            activity.setActiveId(resultSet.getInt("active_id"));
-            activity.setActiveName(resultSet.getString("active_name"));
-            activity.setInitiator(resultSet.getInt("initiator"));
-            activity.setActiveIntroduction(resultSet.getString("content"));
+            activity.setActivityId(resultSet.getInt("activity_id"));
+            activity.setActivityName(resultSet.getString("activity_name"));
+            activity.setInitiator(resultSet.getString("initiator"));
+            activity.setContent(resultSet.getString("content"));
             activity.setRemarks(resultSet.getString("remarks"));
             activity.setInitTime(resultSet.getLong("init_time"));
             activity.setStartTime(resultSet.getLong("start_time"));
@@ -95,8 +119,8 @@ public class ActivityInfoDao implements DaoConstant{
             activity.setLocation(resultSet.getString("location"));
             activity.setPeopleNeeds(resultSet.getInt("people_needs"));
             activity.setPeopleHave(resultSet.getInt("people_have"));
-            activity.setActivePic(resultSet.getString("active_pic"));
-            activity.setActiveOrRace(resultSet.getString("ac_ra"));
+            activity.setActivityPic(resultSet.getString("activity_pic"));
+            activity.setActivityOrRace(resultSet.getString("ac_ra"));
             activity.setClickNumber(resultSet.getInt("click_num"));
             return activity;
         }

@@ -10,6 +10,7 @@ public interface DynamicsService {
 
     public ResponseJson estabDynamic(DynamicNews dynamicNews);
 
+    public ResponseJson getAllDynamicNews();
 
 
 //    public ResponseJson updateDynamic();

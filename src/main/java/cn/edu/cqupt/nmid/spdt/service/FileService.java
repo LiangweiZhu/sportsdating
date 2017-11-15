@@ -13,5 +13,5 @@ public interface FileService {
 
 //    public final String fileBasePath = "F:"+ File.separator+"new";
 
-    public ResponseJson upLoadPic(HttpServletRequest request, int activeId) throws IOException;
+    public ResponseJson upLoadPic(HttpServletRequest request,String property, int activityId) throws IOException;
 }

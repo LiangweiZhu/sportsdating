@@ -8,6 +8,7 @@ import cn.edu.cqupt.nmid.spdt.service.DynamicsService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by Lawrence on 2017/11/11.
@@ -24,6 +25,17 @@ public class DynamicsServiceImpl implements DynamicsService {
         if (results != null) {
             ResponseJson responseJson = new ResponseJson(StatusCodeConstant.OK);
             responseJson.setBody(results);
+        }
+        return new ResponseJson(StatusCodeConstant.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseJson getAllDynamicNews() {
+        List<DynamicNews> dynamicNewsList = dynamicsDao.getAllDynamicNews();
+        if (dynamicNewsList!=null) {
+            ResponseJson responseJson = new ResponseJson(StatusCodeConstant.OK);
+            responseJson.setBody(dynamicNewsList);
+            return responseJson;
         }
         return new ResponseJson(StatusCodeConstant.INTERNAL_SERVER_ERROR);
     }

@@ -9,10 +9,10 @@ import java.sql.Timestamp;
  */
 public class Activity {
 
-    private Integer activeId;
-    private String activeName;
-    private int initiator;
-    private String activeIntroduction;
+    private int activityId;
+    private String activityName;
+    private String initiator;
+    private String content;
     private String remarks;
     private long initTime;
     private long startTime;
@@ -20,33 +20,10 @@ public class Activity {
     private String location;
     private int peopleNeeds;
     private int peopleHave;
-    private String activePic;
-    private String activeOrRace;
+    private String activityPic;
+    private String activityOrRace;
     private Integer clickNumber;
 
-    public Integer getActiveId() {
-        return activeId;
-    }
-
-    public void setActiveId(Integer activeId) {
-        this.activeId = activeId;
-    }
-
-    public String getActiveName() {
-        return activeName;
-    }
-
-    public void setActiveName(String activeName) {
-        this.activeName = activeName;
-    }
-
-    public String getActiveIntroduction() {
-        return activeIntroduction;
-    }
-
-    public void setActiveIntroduction(String activeIntroduction) {
-        this.activeIntroduction = activeIntroduction;
-    }
 
     public String getLocation() {
         return location;
@@ -72,21 +49,6 @@ public class Activity {
         this.peopleHave = peopleHave;
     }
 
-    public String getActivePic() {
-        return activePic;
-    }
-
-    public void setActivePic(String activePic) {
-        this.activePic = activePic;
-    }
-
-    public String getActiveOrRace() {
-        return activeOrRace;
-    }
-
-    public void setActiveOrRace(String activeOrRace) {
-        this.activeOrRace = activeOrRace;
-    }
 
     public Integer getClickNumber() {
         return clickNumber;
@@ -112,14 +74,6 @@ public class Activity {
         this.startTime = startTime;
     }
 
-    public int getInitiator() {
-        return initiator;
-    }
-
-    public void setInitiator(int initiator) {
-        this.initiator = initiator;
-    }
-
     public String getRemarks() {
         return remarks;
     }
@@ -134,5 +88,53 @@ public class Activity {
 
     public void setInitTime(long initTime) {
         this.initTime = initTime;
+    }
+
+    public String getInitiator() {
+        return initiator;
+    }
+
+    public void setInitiator(String initiator) {
+        this.initiator = initiator;
+    }
+
+    public int getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(int activityId) {
+        this.activityId = activityId;
+    }
+
+    public String getActivityPic() {
+        return activityPic;
+    }
+
+    public void setActivityPic(String activityPic) {
+        this.activityPic = activityPic;
+    }
+
+    public String getActivityOrRace() {
+        return activityOrRace;
+    }
+
+    public void setActivityOrRace(String activityOrRace) {
+        this.activityOrRace = activityOrRace;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

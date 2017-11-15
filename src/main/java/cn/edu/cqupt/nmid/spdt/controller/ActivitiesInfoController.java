@@ -2,6 +2,7 @@ package cn.edu.cqupt.nmid.spdt.controller;
 
 import cn.edu.cqupt.nmid.spdt.model.Activity;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
+import cn.edu.cqupt.nmid.spdt.service.FileService;
 import cn.edu.cqupt.nmid.spdt.service.impl.ActivityInfoimpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by Lawrence on 2017/11/4.
@@ -21,11 +23,8 @@ public class ActivitiesInfoController {
     @Resource
     private ActivityInfoimpl activityInfoimpl;
 
-/*    @ResponseBody
-    @RequestMapping(name = "/getActivity" , method = RequestMethod.GET)
-    public ResponseJson getActivity(@RequestParam(value = "activeId") int id) {
-        return activityInfoimpl.getActivity(id);
-    }*/
+    @Resource
+    private FileService fileService;
 
     @ResponseBody
     @RequestMapping(value = "/getActivities",method = RequestMethod.GET)
@@ -49,7 +48,8 @@ public class ActivitiesInfoController {
      */
     @ResponseBody
     @RequestMapping(value = "/estabActivity",method = RequestMethod.POST)
-    public ResponseJson estabActivity(Activity activity) {
-        return activityInfoimpl.estabActivity(activity);
+    public ResponseJson estabActivity(HttpServletRequest request,
+                                      Activity activity) {
+        return activityInfoimpl.estabActivity(request,activity);
     }
 }

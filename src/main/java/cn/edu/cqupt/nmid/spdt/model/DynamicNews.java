@@ -6,9 +6,10 @@ import com.sdicons.json.validator.impl.predicates.Str;
  * Created by Lawrence on 2017/11/11.
  */
 public class DynamicNews {
+    private int dynamicId;
     private String userId;
     private Long initTime;
-    private String text;
+    private String content;
     private String dynamicPic;
 
     public String getUserId() {
@@ -27,13 +28,6 @@ public class DynamicNews {
         this.initTime = initTime;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 
     public String getDynamicPic() {
         return dynamicPic;
@@ -45,6 +39,22 @@ public class DynamicNews {
 
     @Override
     public String toString() {
-        return "["+getUserId()+","+getInitTime()+","+getText()+","+getDynamicPic()+"]";
+        return "["+getUserId()+","+getInitTime()+","+getContent()+","+getDynamicPic()+"]";
+    }
+
+    public int getDynamicId() {
+        return dynamicId;
+    }
+
+    public void setDynamicId(int dynamicId) {
+        this.dynamicId = dynamicId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
