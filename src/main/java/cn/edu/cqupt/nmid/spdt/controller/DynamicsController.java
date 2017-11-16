@@ -1,6 +1,7 @@
 package cn.edu.cqupt.nmid.spdt.controller;
 
 import cn.edu.cqupt.nmid.spdt.model.DynamicNews;
+import cn.edu.cqupt.nmid.spdt.model.DynamicNewsLike;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
 import cn.edu.cqupt.nmid.spdt.service.impl.DynamicsServiceImpl;
 import org.springframework.stereotype.Controller;
@@ -37,8 +38,7 @@ public class DynamicsController {
 
     @ResponseBody
     @RequestMapping(value = "/like",method = RequestMethod.POST)
-    public ResponseJson likeDynamicNews(@RequestParam("userId") String userId,
-                                        DynamicNews dynamicNews) {
-        return null;
+    public ResponseJson likeDynamicNews(DynamicNewsLike dynamicNewsLike) {
+        return dynamicsService.like(dynamicNewsLike);
     }
 }

@@ -2,6 +2,8 @@ package cn.edu.cqupt.nmid.spdt.model;
 
 import com.sdicons.json.validator.impl.predicates.Str;
 
+import java.util.List;
+
 /**
  * Created by Lawrence on 2017/11/11.
  */
@@ -11,6 +13,8 @@ public class DynamicNews {
     private Long initTime;
     private String content;
     private String dynamicPic;
+    //包装点赞列表
+    private List<String> whoLikes;
 
     public String getUserId() {
         return userId;
@@ -58,4 +62,11 @@ public class DynamicNews {
         return "["+getUserId()+","+getInitTime()+","+getContent()+","+getDynamicPic()+"]";
     }
 
+    public List<String> getWhoLikes() {
+        return whoLikes;
+    }
+
+    public void setWhoLikes(List<String> whoLikes) {
+        this.whoLikes = whoLikes;
+    }
 }

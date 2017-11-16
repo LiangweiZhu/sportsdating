@@ -2,10 +2,14 @@ package cn.edu.cqupt.nmid.spdt.service.impl;
 
 import cn.edu.cqupt.nmid.spdt.constant.StatusCodeConstant;
 import cn.edu.cqupt.nmid.spdt.dao.DynamicsServiceDao;
+import cn.edu.cqupt.nmid.spdt.dao.UserServiceDao;
 import cn.edu.cqupt.nmid.spdt.model.DynamicNews;
+import cn.edu.cqupt.nmid.spdt.model.DynamicNewsLike;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
+import cn.edu.cqupt.nmid.spdt.service.ActivityService;
 import cn.edu.cqupt.nmid.spdt.service.DynamicsService;
 import cn.edu.cqupt.nmid.spdt.service.FileService;
+import cn.edu.cqupt.nmid.spdt.service.UserService;
 import cn.edu.cqupt.nmid.spdt.util.DaoResponseUtil;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +26,40 @@ public class DynamicsServiceImpl implements DynamicsService {
 
     @Resource
     private DynamicsServiceDao dynamicsDao;
-
     @Resource
     private FileService fileService;
+    @Resource
+    private UserServiceDao userServiceDao;
 
+    /**
+     * 创建圈子里的消息
+     * @param request
+     * @param dynamicNews
+     * @return
+     * @throws IOException
+     */
     @Override
     public ResponseJson estabDynamic(HttpServletRequest request, DynamicNews dynamicNews) throws IOException {
         DynamicNews results = dynamicsDao.estabDynamicNews(dynamicNews);
         results.setDynamicPic(fileService.upLoadPic(request,"DynamicNews",results.getDynamicId()));;
         return DaoResponseUtil.isNull(results);
+    }
+
+    /**
+     * 点赞
+     * @param dynamicNewsLike
+     * @return
+     */
+    @Override
+    public ResponseJson like(DynamicNewsLike dynamicNewsLike) {
+        dynamicNewsLike.setUserName(userServiceDao.findUserByID(dynamicNewsLike.getUserId()).getUserName());
+        DynamicNewsLike oldHistory = dynamicsDao.findHistory(dynamicNewsLike);
+        if (oldHistory==null) {
+            oldHistory = dynamicsDao.newLike(dynamicNewsLike);
+        } else {
+            oldHistory = dynamicsDao.changeLikeStatus(dynamicNewsLike);
+        }
+        return DaoResponseUtil.isNull(oldHistory);
     }
 
     @Override

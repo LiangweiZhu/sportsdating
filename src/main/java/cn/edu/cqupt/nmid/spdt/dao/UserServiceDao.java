@@ -31,11 +31,12 @@ public class UserServiceDao implements DaoConstant{
 
     public User findUserByID(String userId) {
         String sql = "SELECT * FROM user WHERE id=?";
-        User user;
+        User user = new User();
         try {
             user = jdbcTemplate.queryForObject(sql,new UserRowMapper(),userId);
         } catch (Exception exception) {
-            return null;
+            System.out.println(exception.getMessage());
+            System.out.println(exception.getCause());
         }
         return user;
     }

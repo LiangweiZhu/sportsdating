@@ -6,4 +6,6 @@ package cn.edu.cqupt.nmid.spdt.constant;
 public interface DaoConstant {
     public static final String SUCCESS="success";
     String FAIL = "fail";
+    String LIKE = "like";
+    String UNLIKE = "unlike";
 }
