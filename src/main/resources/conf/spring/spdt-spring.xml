@@ -23,7 +23,7 @@
     <!--创建数据池-->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="${jdbc.driverClass}"/>
-        <property name="jdbcUrl" value="${jdbc.outNet.jdbcUrl}"/>
+        <property name="jdbcUrl" value="${jdbc.InnerNet.jdbcUrl"/>
         <property name="user" value="${jdbc.user}"/>
         <property name="password" value="${jdbc.password}"/>
         <!-- c3p0连接池的私有属性 -->

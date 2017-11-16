@@ -6,6 +6,7 @@ import cn.edu.cqupt.nmid.spdt.service.impl.DynamicsServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -32,5 +33,12 @@ public class DynamicsController {
     @RequestMapping(value = "/getAll",method = RequestMethod.GET)
     public ResponseJson getAllDynamicNews() {
         return dynamicsService.getAllDynamicNews();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/like",method = RequestMethod.POST)
+    public ResponseJson likeDynamicNews(@RequestParam("userId") String userId,
+                                        DynamicNews dynamicNews) {
+        return null;
     }
 }
