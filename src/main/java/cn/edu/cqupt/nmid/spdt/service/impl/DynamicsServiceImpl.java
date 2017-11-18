@@ -53,13 +53,16 @@ public class DynamicsServiceImpl implements DynamicsService {
      */
     @Override
     public ResponseJson like(DynamicNewsLike dynamicNewsLike) {
+        //寻找有无旧的点赞记录
         dynamicNewsLike.setUserName(userServiceDao.findUserByID(dynamicNewsLike.getUserId()).getUserName());
         DynamicNewsLike oldHistory = dynamicsDao.findHistory(dynamicNewsLike);
+        //没有则新建记录
         if (oldHistory==null) {
             oldHistory = dynamicsDao.newLike(dynamicNewsLike);
             DynamicNews dynamicNews = dynamicsDao.getDynamicNewsById(oldHistory.getDynamicId());
             dynamicsDao.updateLikeNum(dynamicNews.getDynamicId(),dynamicNews.getLikeNumber()+1);
         } else {
+            //有责更改点赞状态
             oldHistory = dynamicsDao.changeLikeStatus(oldHistory);
             if ("like".equals(oldHistory.getUserLike())) {
                 DynamicNews dynamicNews = dynamicsDao.getDynamicNewsById(oldHistory.getDynamicId());
@@ -73,6 +76,10 @@ public class DynamicsServiceImpl implements DynamicsService {
         return DaoResponseUtil.isNull(oldHistory);
     }
 
+    /**
+     * 获取点赞列表
+     * @return
+     */
     @Override
     public ResponseJson getAllDynamicNews() {
         List<DynamicNews> dynamicNewsList = dynamicsDao.getAllDynamicNews();

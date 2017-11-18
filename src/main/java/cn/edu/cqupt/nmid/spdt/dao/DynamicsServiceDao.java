@@ -87,9 +87,14 @@ public class DynamicsServiceDao implements DaoConstant {
         return jdbcTemplate.queryForObject(sql,new DynamicsRowMapper(),dynamicId);
     }
 
+    /**
+     * 获取消息的点赞人名字
+     * @param dynamicId 消息ID
+     * @return
+     */
     public List<String> getLikedPeole(int dynamicId) {
-        String sql = "SELECT * FROM dynamics_like WHERE dynamic_id=?";
-        List<DynamicNewsLike> list = jdbcTemplate.query(sql,new DynamicsLikeRowMapper(),dynamicId);
+        String sql = "SELECT * FROM dynamics_like WHERE dynamic_id=? AND user_like=?";
+        List<DynamicNewsLike> list = jdbcTemplate.query(sql,new DynamicsLikeRowMapper(),dynamicId,DaoConstant.LIKE);
         List<String> userNames = new LinkedList<>();
         Iterator<DynamicNewsLike> iterator = list.iterator();
         while (iterator.hasNext()) {
@@ -146,7 +151,7 @@ public class DynamicsServiceDao implements DaoConstant {
     }
 
     /**
-     * 查找已有的点赞记录
+     * 查找已有的点赞记录，找不到则返回空
      * @param dynamicNewsLike
      * @return
      */
@@ -163,6 +168,7 @@ public class DynamicsServiceDao implements DaoConstant {
     }
 
     /**
+     *
      * 变换点赞状态
      * @param dynamicNewsLike
      * @return
