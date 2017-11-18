@@ -33,7 +33,7 @@ public class ActivityInfoDao implements DaoConstant{
      * @return
      */
     public List<Activity> getActivities() {
-        String sql = "SELECT * FROM activities WHERE end_time > ? ORDER BY start_time DESC";
+        String sql = "SELECT * FROM activities WHERE end_time > ? ORDER BY people_have DESC, people_needs DESC ";
         return jdbcTemplate.query(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -76,6 +76,12 @@ public class ActivityInfoDao implements DaoConstant{
         } return null;
     }
 
+    /**
+     * 保存活动照片
+     * @param activityPic
+     * @param activityId
+     * @return
+     */
     public String savePicture(String activityPic,int activityId) {
         String sql="UPDATE activities SET activity_pic=? WHERE activity_id=?";
         int num = jdbcTemplate.update(sql,activityPic,activityId);
@@ -99,9 +105,30 @@ public class ActivityInfoDao implements DaoConstant{
         } else {return FAIL;}
     }
 
- /*   public String joinActivity(String userId,int activityId) {
-
-    }*/
+    /**
+     * 加入活动 user_activity表
+     * @param userId
+     * @param activityId
+     * @return
+     */
+    public String joinActivity(String userId,int activityId) {
+        String sql="INSERT INTO user_activity (user_id,activity_id) VALUES (?,?)";
+        int results = jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement pS = connection.prepareStatement(sql);
+                pS.setString(1,userId);
+                pS.setInt(2,activityId);
+                return pS;
+            }
+        });
+        if (results==1) {
+            return SUCCESS;
+        }
+        else {
+            return FAIL;
+        }
+    }
 
     private class ActivityRowMapper implements RowMapper<Activity> {
 

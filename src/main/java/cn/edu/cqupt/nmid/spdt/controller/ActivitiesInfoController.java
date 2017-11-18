@@ -2,6 +2,7 @@ package cn.edu.cqupt.nmid.spdt.controller;
 
 import cn.edu.cqupt.nmid.spdt.model.Activity;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
+import cn.edu.cqupt.nmid.spdt.service.ActivityService;
 import cn.edu.cqupt.nmid.spdt.service.FileService;
 import cn.edu.cqupt.nmid.spdt.service.impl.ActivityInfoimpl;
 import org.springframework.stereotype.Controller;
@@ -22,22 +23,22 @@ import java.io.IOException;
 public class ActivitiesInfoController {
 
     @Resource
-    private ActivityInfoimpl activityInfoimpl;
+    private ActivityService activityService;
 
     @ResponseBody
     @RequestMapping(value = "/getActivities",method = RequestMethod.GET)
     public ResponseJson getActivities() {
-        return activityInfoimpl.getActivities();
+        return activityService.getActivities();
     }
 
     @ResponseBody
     @RequestMapping(value = "/joinActivity",method = RequestMethod.POST)
     public ResponseJson joinActivity(
             @RequestParam("userId") String id,
-            @RequestParam("activeId") String activeId
+            @RequestParam("activityId") int activityId
     ) {
+        return activityService.joinActivity(id,activityId);
 
-        return  null;
     }
 
     /**
@@ -48,6 +49,6 @@ public class ActivitiesInfoController {
     @RequestMapping(value = "/estabActivity",method = RequestMethod.POST)
     public ResponseJson estabActivity(HttpServletRequest request,
                                       Activity activity) throws IOException {
-        return activityInfoimpl.estabActivity(request,activity);
+        return activityService.estabActivity(request,activity);
     }
 }

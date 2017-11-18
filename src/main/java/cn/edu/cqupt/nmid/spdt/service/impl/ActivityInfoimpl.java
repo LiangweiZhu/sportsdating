@@ -9,6 +9,8 @@ import cn.edu.cqupt.nmid.spdt.service.FileService;
 import cn.edu.cqupt.nmid.spdt.util.DaoResponseUtil;
 import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import java.util.List;
  * Created by Lawrence on 2017/11/4.
  */
 @Service
+//@Transactional(value = "transactionManager", isolation = Isolation.DEFAULT, rollbackFor = Exception.class)
 public class ActivityInfoimpl implements ActivityService {
 
 
@@ -27,6 +30,7 @@ public class ActivityInfoimpl implements ActivityService {
 
     @Resource
     private FileService fileService;
+
     /**
      * 根据活动ID返回活动信息
      * @param activityId
@@ -55,9 +59,9 @@ public class ActivityInfoimpl implements ActivityService {
      */
     @Override
     public ResponseJson estabActivity(HttpServletRequest request, Activity activity) throws IOException {
-        Activity newActivity = activityInfoDao.saveActivity(activity);
-        newActivity.setActivityPic(fileService.upLoadPic(request,"activities",activity.getActivityId()));
-        return DaoResponseUtil.isNull(newActivity);
+            Activity newActivity = activityInfoDao.saveActivity(activity);
+            newActivity.setActivityPic(fileService.upLoadPic(request,"activities",activity.getActivityId()));
+            return DaoResponseUtil.isNull(newActivity);
     }
 
     /**
@@ -67,12 +71,14 @@ public class ActivityInfoimpl implements ActivityService {
     @Override
     public ResponseJson joinActivity(String userId,int activityId) {
         Activity activity = activityInfoDao.getActivityById(activityId);
-        if (activity!=null) {
+        if (activity ==null) {
             return new ResponseJson(StatusCodeConstant.INVALID_REQUEST);
         }
         if (activity.getPeopleHave() < activity.getPeopleNeeds()) {
-            if ("success".equals(activityInfoDao.updateActivityPeople(activity.getPeopleHave()+1,activityId))) {
-                return new ResponseJson(StatusCodeConstant.OK);
+            if ("success".equals(activityInfoDao.joinActivity(userId,activityId))) {
+                if ("success".equals(activityInfoDao.updateActivityPeople(activity.getPeopleHave()+1,activityId))) {
+                    return new ResponseJson(StatusCodeConstant.OK);
+                }
             }
         }
         return new ResponseJson(StatusCodeConstant.FORBIDDEN);

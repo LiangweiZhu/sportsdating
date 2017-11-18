@@ -12,6 +12,8 @@ import cn.edu.cqupt.nmid.spdt.service.FileService;
 import cn.edu.cqupt.nmid.spdt.service.UserService;
 import cn.edu.cqupt.nmid.spdt.util.DaoResponseUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ import java.util.List;
  * Created by Lawrence on 2017/11/11.
  */
 @Service
+//@Transactional(value = "transactionManager", isolation = Isolation.DEFAULT, rollbackFor = Exception.class)
 public class DynamicsServiceImpl implements DynamicsService {
 
     @Resource
