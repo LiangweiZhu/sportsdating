@@ -4,6 +4,7 @@ import cn.edu.cqupt.nmid.spdt.constant.DaoConstant;
 import cn.edu.cqupt.nmid.spdt.model.DynamicNews;
 import cn.edu.cqupt.nmid.spdt.model.DynamicNewsLike;
 import cn.edu.cqupt.nmid.spdt.model.User;
+import com.sdicons.json.validator.impl.predicates.Str;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.sql.*;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -41,7 +44,6 @@ public class DynamicsServiceDao implements DaoConstant {
                 pS.setLong(2,dynamicNews.getInitTime());
                 pS.setString(3,dynamicNews.getContent());
                 return pS;
-
             }
         },keyHolder);
         if (1 == results) {
@@ -65,6 +67,55 @@ public class DynamicsServiceDao implements DaoConstant {
         }
         return FAIL;
     }
+
+    /**
+     * 获取热门消息列表
+     * @return
+     */
+    public List<DynamicNews> getAllDynamicNews() {
+        String sql = "SELECT * FROM dynamics ORDER BY like_num DESC, init_time DESC";
+        return jdbcTemplate.query(sql,new DynamicsRowMapper());
+    }
+
+    /**
+     * 根据ID查询消息详情
+     * @param dynamicId
+     * @return
+     */
+    public DynamicNews getDynamicNewsById(int dynamicId) {
+        String sql="SELECT * FROM dynamics WHERE dynamic_id=?";
+        return jdbcTemplate.queryForObject(sql,new DynamicsRowMapper(),dynamicId);
+    }
+
+    public List<String> getLikedPeole(int dynamicId) {
+        String sql = "SELECT * FROM dynamics_like WHERE dynamic_id=?";
+        List<DynamicNewsLike> list = jdbcTemplate.query(sql,new DynamicsLikeRowMapper(),dynamicId);
+        List<String> userNames = new LinkedList<>();
+        Iterator<DynamicNewsLike> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            DynamicNewsLike temp = iterator.next();
+            userNames.add(temp.getUserName());
+        }
+        return userNames;
+    }
+    /**
+     * 更新消息的点赞数
+     * @param dynamicId
+     * @param likeNum
+     * @return
+     */
+    public String updateLikeNum(int dynamicId,int likeNum) {
+        String sql="UPDATE dynamics SET like_num=? WHERE dynamic_id=?";
+        int results = jdbcTemplate.update(sql,likeNum,dynamicId);
+        if (results==1) {
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+
+
+
 
     /**
      * 新建点赞记录
@@ -142,16 +193,6 @@ public class DynamicsServiceDao implements DaoConstant {
         return dynamicNewsLike;
     }
 
-    /**
-     * 获取热门消息列表
-     * @return
-     */
-    public List<DynamicNews> getAllDynamicNews() {
-        String sql = "SELECT * FROM dynamics ORDER BY init_time DESC ";
-        return jdbcTemplate.query(sql,new DynamicsRowMapper());
-    }
-
-
 
     private class DynamicsRowMapper implements RowMapper<DynamicNews> {
 
@@ -163,6 +204,7 @@ public class DynamicsServiceDao implements DaoConstant {
             dynamicNews.setContent(resultSet.getString("words"));
             dynamicNews.setInitTime(resultSet.getLong("init_time"));
             dynamicNews.setDynamicPic(resultSet.getString("dynamic_pic"));
+            dynamicNews.setLikeNumber(resultSet.getInt("like_num"));
             return dynamicNews;
         }
     }
@@ -172,6 +214,7 @@ public class DynamicsServiceDao implements DaoConstant {
         @Override
         public DynamicNewsLike mapRow(ResultSet resultSet, int i) throws SQLException {
             DynamicNewsLike dynamicNewsLike = new DynamicNewsLike();
+            dynamicNewsLike.setSerialNum(resultSet.getInt("serial_num"));
             dynamicNewsLike.setDynamicId(resultSet.getInt("dynamic_id"));
             dynamicNewsLike.setUserId(resultSet.getString("user_id"));
             dynamicNewsLike.setUserName(resultSet.getString("user_name"));

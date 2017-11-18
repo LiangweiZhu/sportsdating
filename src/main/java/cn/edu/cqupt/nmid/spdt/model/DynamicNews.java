@@ -13,6 +13,7 @@ public class DynamicNews {
     private Long initTime;
     private String content;
     private String dynamicPic;
+    private int likeNumber;
     //包装点赞列表
     private List<String> whoLikes;
 
@@ -68,5 +69,13 @@ public class DynamicNews {
 
     public void setWhoLikes(List<String> whoLikes) {
         this.whoLikes = whoLikes;
+    }
+
+    public int getLikeNumber() {
+        return likeNumber;
+    }
+
+    public void setLikeNumber(int likeNumber) {
+        this.likeNumber = likeNumber;
     }
 }

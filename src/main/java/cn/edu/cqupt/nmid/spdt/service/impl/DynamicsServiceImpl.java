@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -56,8 +57,18 @@ public class DynamicsServiceImpl implements DynamicsService {
         DynamicNewsLike oldHistory = dynamicsDao.findHistory(dynamicNewsLike);
         if (oldHistory==null) {
             oldHistory = dynamicsDao.newLike(dynamicNewsLike);
+            DynamicNews dynamicNews = dynamicsDao.getDynamicNewsById(oldHistory.getDynamicId());
+            dynamicsDao.updateLikeNum(dynamicNews.getDynamicId(),dynamicNews.getLikeNumber()+1);
         } else {
-            oldHistory = dynamicsDao.changeLikeStatus(dynamicNewsLike);
+            oldHistory = dynamicsDao.changeLikeStatus(oldHistory);
+            if ("like".equals(oldHistory.getUserLike())) {
+                DynamicNews dynamicNews = dynamicsDao.getDynamicNewsById(oldHistory.getDynamicId());
+                dynamicsDao.updateLikeNum(dynamicNews.getDynamicId(),dynamicNews.getLikeNumber()+1);
+            }
+            else {
+                DynamicNews dynamicNews = dynamicsDao.getDynamicNewsById(oldHistory.getDynamicId());
+                dynamicsDao.updateLikeNum(dynamicNews.getDynamicId(),dynamicNews.getLikeNumber()-1);
+            }
         }
         return DaoResponseUtil.isNull(oldHistory);
     }
@@ -65,6 +76,11 @@ public class DynamicsServiceImpl implements DynamicsService {
     @Override
     public ResponseJson getAllDynamicNews() {
         List<DynamicNews> dynamicNewsList = dynamicsDao.getAllDynamicNews();
+        Iterator<DynamicNews> iterator = dynamicNewsList.iterator();
+        while (iterator.hasNext()) {
+            DynamicNews dynamicNews = iterator.next();
+            dynamicNews.setWhoLikes(dynamicsDao.getLikedPeole(dynamicNews.getDynamicId()));
+        }
         return DaoResponseUtil.isNull(dynamicNewsList);
     }
 }
