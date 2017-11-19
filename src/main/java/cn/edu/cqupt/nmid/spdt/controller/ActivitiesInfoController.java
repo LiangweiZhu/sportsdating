@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,8 @@ public class ActivitiesInfoController {
     @ResponseBody
     @RequestMapping(value = "/estabActivity",method = RequestMethod.POST)
     public ResponseJson estabActivity(HttpServletRequest request,
-                                      Activity activity) throws IOException {
+                                      Activity activity
+                                      /*@RequestParam("file") CommonsMultipartFile file*/) throws IOException {
         return activityService.estabActivity(request,activity);
     }
 }

@@ -11,6 +11,7 @@ import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -58,9 +59,10 @@ public class ActivityInfoimpl implements ActivityService {
      * @return
      */
     @Override
-    public ResponseJson estabActivity(HttpServletRequest request, Activity activity) throws IOException {
+    public ResponseJson estabActivity(HttpServletRequest request/*, CommonsMultipartFile file*/,
+                                      Activity activity) throws IOException {
             Activity newActivity = activityInfoDao.saveActivity(activity);
-            newActivity.setActivityPic(fileService.upLoadPic(request,"activities",activity.getActivityId()));
+            newActivity.setActivityPic(fileService.upLoadPic(request,"activities"/*,file*/,activity.getActivityId()));
             return DaoResponseUtil.isNull(newActivity);
     }
 

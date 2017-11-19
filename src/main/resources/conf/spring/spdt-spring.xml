@@ -90,4 +90,5 @@
 
     <!--静态资源映射-->
     <mvc:resources mapping="/resources/**" location="/WEB-INF/resources/"/>
+
 </beans>

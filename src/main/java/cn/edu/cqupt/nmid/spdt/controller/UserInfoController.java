@@ -53,10 +53,12 @@ public class UserInfoController {
      * @return
      * @throws IOException
      */
+
     @ResponseBody
     @RequestMapping(value = "/uploadPic",method = RequestMethod.POST)
     public ResponseJson uploadPic(HttpServletRequest request,
                                   @RequestParam("userId") String userId) throws IOException{
         return userService.uploadUserPic(request,userId);
     }
+
 }

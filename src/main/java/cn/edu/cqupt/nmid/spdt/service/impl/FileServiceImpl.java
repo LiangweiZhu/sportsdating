@@ -6,6 +6,7 @@ import cn.edu.cqupt.nmid.spdt.dao.DynamicsServiceDao;
 import cn.edu.cqupt.nmid.spdt.model.json.ResponseJson;
 import cn.edu.cqupt.nmid.spdt.service.FileService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -73,6 +74,45 @@ public class FileServiceImpl implements FileService {
         } else {
             return "";
         }
+    }
+
+    /**
+     * 通过流上传图片
+     * @param file
+     * @return
+     */
+    @Override
+    public String uploadByBufStream(HttpServletRequest request,
+                                    String property,
+                                    CommonsMultipartFile file,
+                                    int id){
+        String newFilePath="";
+        try {
+            String basePath = request.getSession().getServletContext().getRealPath("/")+"WEB-INF"+
+                    File.separator+"resources"+File.separator+property+File.separator+id+File.separator;
+            File filePath = new File(basePath);
+            if (!filePath.exists()) {
+                filePath.mkdirs();
+            }
+            newFilePath = System.currentTimeMillis()+ file.getOriginalFilename();
+            String path = basePath+newFilePath;
+            File picFile = new File(path);
+            OutputStream os = new FileOutputStream(picFile);
+            InputStream is = file.getInputStream();
+            byte[] buf = new byte[1024];
+            while(is.read(buf) != -1){
+                os.write(buf);
+                os.flush();
+            }
+            if (!"success".equals(toSavePic(property,id,newFilePath))){
+                return "";
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return newFilePath;
     }
 
     private String toSavePic(String property,int id,String filePath) {
